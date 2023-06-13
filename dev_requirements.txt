@@ -1,0 +1,4 @@
+-r src/requirements.txt
+bandit
+flake8
+mypy

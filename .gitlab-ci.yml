@@ -1,0 +1,39 @@
+image: python:3.10
+
+variables:
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+
+stages:
+  - checks
+  - tests
+
+cache:
+  paths:
+    - .cache/pip
+    - venv/
+
+before_script:
+  - pip install virtualenv
+  - virtualenv venv
+  - source venv/bin/activate
+  - pip install -r dev_requirements.txt
+
+run_style_checks:
+  stage: checks
+  script:
+    - flake8 src
+
+run_security_checks:
+  stage: checks
+  script:
+    - bandit src
+
+run_type_checks:
+  stage: checks
+  script:
+    - mypy src --check-untyped-defs
+
+run_unit_tests:
+  stage: tests
+  script:
+    - python src/manage.py test
